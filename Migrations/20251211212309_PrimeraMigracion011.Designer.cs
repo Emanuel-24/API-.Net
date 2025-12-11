@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiFinal.Data;
 
@@ -11,9 +12,11 @@ using WebApiFinal.Data;
 namespace WebApiFinal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251211212309_PrimeraMigracion011")]
+    partial class PrimeraMigracion011
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,34 +24,6 @@ namespace WebApiFinal.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Reserva", b =>
-                {
-                    b.Property<int>("ReservaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservaId"));
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaReserva")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ReservaId");
-
-                    b.HasIndex("ClienteId");
-
-                    b.ToTable("Reservas");
-                });
 
             modelBuilder.Entity("WebApiFinal.Models.Cliente", b =>
                 {
@@ -79,6 +54,39 @@ namespace WebApiFinal.Migrations
                         .IsUnique();
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("WebApiFinal.Models.Reserva", b =>
+                {
+                    b.Property<int>("ReservaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservaId"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaReserva")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ServicioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservaId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ServicioId");
+
+                    b.ToTable("Reservas");
                 });
 
             modelBuilder.Entity("WebApiFinal.Models.Servicio", b =>
@@ -151,7 +159,7 @@ namespace WebApiFinal.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("Reserva", b =>
+            modelBuilder.Entity("WebApiFinal.Models.Reserva", b =>
                 {
                     b.HasOne("WebApiFinal.Models.Cliente", "Cliente")
                         .WithMany("Reservas")
@@ -159,12 +167,20 @@ namespace WebApiFinal.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("WebApiFinal.Models.Servicio", "Servicio")
+                        .WithMany()
+                        .HasForeignKey("ServicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Servicio");
                 });
 
             modelBuilder.Entity("WebApiFinal.Models.ServicioReserva", b =>
                 {
-                    b.HasOne("Reserva", "Reserva")
+                    b.HasOne("WebApiFinal.Models.Reserva", "Reserva")
                         .WithMany("ServiciosReservas")
                         .HasForeignKey("ReservaId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -181,14 +197,14 @@ namespace WebApiFinal.Migrations
                     b.Navigation("Servicio");
                 });
 
-            modelBuilder.Entity("Reserva", b =>
-                {
-                    b.Navigation("ServiciosReservas");
-                });
-
             modelBuilder.Entity("WebApiFinal.Models.Cliente", b =>
                 {
                     b.Navigation("Reservas");
+                });
+
+            modelBuilder.Entity("WebApiFinal.Models.Reserva", b =>
+                {
+                    b.Navigation("ServiciosReservas");
                 });
 
             modelBuilder.Entity("WebApiFinal.Models.Servicio", b =>

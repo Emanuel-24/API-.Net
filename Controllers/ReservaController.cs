@@ -12,13 +12,23 @@ namespace WebApiFinal.Controllers
     public class ReservaController : BaseController<Reserva>
     {
         private readonly IReservaRepository _repo;
-        public ReservaController(IReservaRepository repo) : base(repo) => _repo = repo;
+
+        public ReservaController(IReservaRepository repo) : base(repo)
+            => _repo = repo;
+
+        // ESTE MÉTODO SOBRESCRIBE EL GET GENERAL
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var reservas = await _repo.GetReservasCompletasAsync();
+            return Ok(reservas);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(ReservaCreateDto dto)
         {
             var nueva = await _repo.CreateAsync(dto);
-            return CreatedAtAction(nameof(Get), new { id = nueva.ReservaId }, nueva);
+            return CreatedAtAction(nameof(GetFull), new { id = nueva.ReservaId }, nueva);
         }
 
         [HttpPut("{id}")]
@@ -43,12 +53,13 @@ namespace WebApiFinal.Controllers
             if (reserva == null) return NotFound();
             return Ok(reserva);
         }
+
         [HttpGet("completas")]
         public async Task<IActionResult> GetAllReservas()
         {
             var reservas = await _repo.GetReservasCompletasAsync();
             return Ok(reservas);
         }
-
     }
+
 }

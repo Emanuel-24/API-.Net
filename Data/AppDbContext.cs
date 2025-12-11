@@ -11,8 +11,8 @@ namespace WebApiFinal.Data
         public DbSet<Servicio> Servicios { get; set; } = null!;
         public DbSet<Reserva> Reservas { get; set; } = null!;
         public DbSet<Usuario> Usuarios { get; set; } = null!;
+        public DbSet<ServicioReserva> ServiciosReservas { get; set; } = null!; // 
 
-        public DbSet<ServicioReserva> ServiciosReservas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

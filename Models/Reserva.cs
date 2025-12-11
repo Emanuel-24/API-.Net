@@ -1,21 +1,16 @@
-﻿
+﻿using WebApiFinal.Models;
 
-namespace WebApiFinal.Models
+public class Reserva
 {
-    // Representa la tabla Reservas
-    public class Reserva
-    {
-        public int ReservaId { get; set; }               // PK
-        public int ClienteId { get; set; }               // FK
-        public Cliente Cliente { get; set; } = null!;    // navegación
-        public int ServicioId { get; set; }              // FK
-        public Servicio Servicio { get; set; } = null!;  // navegación
+    public int ReservaId { get; set; }
 
-        public DateTime FechaReserva { get; set; } = DateTime.UtcNow;
-        public string Estado { get; set; } = "Pendiente"; // Pendiente/Confirmada/Cancelada
-        public string? Observaciones { get; set; }
+    public int ClienteId { get; set; }
+    public Cliente Cliente { get; set; } = null!;
 
-        // Relación muchos a muchos
-        public ICollection<ServicioReserva> ServiciosReservas { get; set; }
-    }
+    public DateTime FechaReserva { get; set; } = DateTime.UtcNow;
+    public string Estado { get; set; } = "Pendiente";
+    public string? Observaciones { get; set; }
+
+    // Many-to-many real (correcto)
+    public ICollection<ServicioReserva> ServiciosReservas { get; set; } = new List<ServicioReserva>();
 }
