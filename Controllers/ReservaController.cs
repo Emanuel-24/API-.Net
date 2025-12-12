@@ -17,7 +17,7 @@ namespace WebApiFinal.Controllers
             => _repo = repo;
 
         // ESTE MÉTODO SOBRESCRIBE EL GET GENERAL
-        [HttpGet]
+        [HttpGet("active")]
         public async Task<IActionResult> GetAll()
         {
             var reservas = await _repo.GetReservasCompletasAsync();
