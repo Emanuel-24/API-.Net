@@ -88,5 +88,29 @@ namespace WebApiFinal.Repositories
                     .ThenInclude(sr => sr.Servicio)
                 .ToListAsync();
         }
+
+        // Hides base implementation to ensure related join records are removed before deleting a Reserva
+        public new async Task<bool> DeleteAsync(int id)
+        {
+            // Load the reserva including related join entries
+            var reserva = await _context.Reservas
+                .Include(r => r.ServiciosReservas)
+                .FirstOrDefaultAsync(r => r.ReservaId == id);
+
+            if (reserva == null)
+                return false;
+
+            // Remove related ServicioReserva entries first to avoid FK constraint (DeleteBehavior.Restrict)
+            if (reserva.ServiciosReservas != null && reserva.ServiciosReservas.Any())
+            {
+                _context.ServiciosReservas.RemoveRange(reserva.ServiciosReservas);
+            }
+
+            _context.Reservas.Remove(reserva);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
